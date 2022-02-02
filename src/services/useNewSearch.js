@@ -6,6 +6,8 @@ const url = "https://newsapi.org/v2/everything";
 
 export default function useNewSearch(query, pageNumber) {
   useEffect(() => {
+    const controller = new AbortController();
+
     axios
       .get(url, {
         params: {
@@ -13,6 +15,7 @@ export default function useNewSearch(query, pageNumber) {
           apiKey: key,
           page: pageNumber,
         },
+        signal: controller.signal,
       })
       .then((res) => {
         console.log(res);
@@ -20,6 +23,11 @@ export default function useNewSearch(query, pageNumber) {
       .catch((err) => {
         console.log(err);
       });
+    // clean-up code when unmount
+    return () => {
+      // cancel previous request
+      controller.abort();
+    };
   }, [query, pageNumber]);
 
   return null;
