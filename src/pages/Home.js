@@ -1,7 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import useNewSearch from "../services/useNewSearch";
 import Card from "../components/Card";
-import { Link } from "react-router-dom";
 
 export default function Home() {
   const [query, setQuery] = useState("");
