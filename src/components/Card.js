@@ -9,7 +9,7 @@ function Card({ article }) {
   };
 
   return (
-    <Link to="/article" state={{ article }}>
+    <Link to="/article" state={{ article: article }}>
       <div className="max-w-sm border-2 h-full shadow">
         <img src={article.urlToImage} alt="Illustration de l'article" />
         <div className="m-2 flex flex-col justify-between">
