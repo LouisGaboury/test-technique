@@ -20,7 +20,6 @@ export default function useNewSearch(query, pageNumber) {
     const controller = new AbortController();
     const delay = setTimeout(() => {
       if (query) {
-        console.log("useNewSearch déclenché");
         setError(false);
         setLoading(true);
         axios

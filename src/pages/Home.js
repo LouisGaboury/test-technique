@@ -1,5 +1,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import useNewSearch from "../services/useNewSearch";
+import Card from "../components/Card";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -18,7 +20,6 @@ export default function Home() {
         }
       });
       if (node) observer.current.observe(node);
-      console.log(node);
     },
     [loading, hasMore]
   );
@@ -36,19 +37,30 @@ export default function Home() {
   return (
     <div className="m-8">
       <h1 className="text-4xl mb-4">Ma liste de news</h1>
-      <input type="text" onChange={handleSearch} className="border-2"></input>
-      {news.map((article, index) => {
-        // If last element in array, passing it in useCallback
-        if (news.length === index + 1) {
-          return (
-            <h4 key={index} ref={lastElementRef}>
-              {article.title}
-            </h4>
-          );
-        } else {
-          return <h4 key={index}>{article.title}</h4>;
-        }
-      })}
+      <input
+        type="text"
+        onChange={handleSearch}
+        className="border-2 mb-8"
+      ></input>
+      <section className="flex flex-wrap justify-around max-w-full px-3">
+        {news.map((article, index) => {
+          // If last element in array, passing it in useCallback
+          if (news.length === index + 1) {
+            return (
+              <article key={index} ref={lastElementRef} className="mb-6">
+                <Card article={article} />
+              </article>
+            );
+          } else {
+            return (
+              <article key={index} className="mb-6">
+                <Card article={article} />
+              </article>
+            );
+          }
+        })}
+      </section>
+
       <div>{loading && "Loading..."}</div>
       <div>{error && "Erreur..."}</div>
     </div>

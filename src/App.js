@@ -9,7 +9,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/article/:id" element={<Article />} />
+        <Route path="/article" element={<Article />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
