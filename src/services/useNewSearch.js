@@ -28,14 +28,16 @@ export default function useNewSearch(query, pageNumber) {
             signal: controller.signal,
           })
           .then((res) => {
-            console.log(res);
+            setHasMore(res.data.totalResults > 0);
             setNews((prevNews) => {
               // using set for ensuring there are no duplicate
+              // kinda useless though since Set scan objects reference instead of pure equality
               return [...new Set([].concat(prevNews, res.data.articles))];
             });
             setLoading(false);
           })
           .catch((err) => {
+            if (axios.isCancel(err)) return;
             setError(err);
           });
       }

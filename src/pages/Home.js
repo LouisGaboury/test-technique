@@ -4,7 +4,6 @@ import useNewSearch from "../services/useNewSearch";
 export default function Home() {
   const [query, setQuery] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
-
   const { news, loading, error } = useNewSearch(query, pageNumber);
 
   /**
