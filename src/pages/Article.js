@@ -1,8 +1,9 @@
 import React from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Article() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { article } = location.state;
 
   const toDate = () => {
@@ -54,7 +55,13 @@ export default function Article() {
         published {toDate()} on {article.source.name}
       </p>
 
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-around mt-4">
+        <button
+          className="text-xl border-2 shadow-md rounded-xl h-12 w-60 max-w-md bg-gray-400"
+          onClick={() => navigate("/")}
+        >
+          Revenir aux news
+        </button>
         <button
           className="text-xl border-2 shadow-md rounded-xl h-12 w-60 max-w-md bg-gray-400"
           onClick={() => window.open(article.url, "_blank")}
