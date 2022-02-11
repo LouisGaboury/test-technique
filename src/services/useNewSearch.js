@@ -1,34 +1,53 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const key = process.env.REACT_APP_API_KEY;
 const url = "https://newsapi.org/v2/everything";
 
 export default function useNewSearch(query, pageNumber) {
+  const [loading, setLoading] = useState(false);
+  const [news, setNews] = useState([]);
+  const [error, setError] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [hasMore, setHasMore] = useState(false);
+
   useEffect(() => {
     const controller = new AbortController();
+    const delay = setTimeout(() => {
+      if (query) {
+        console.log("useNewSearch déclenché");
+        setError(false);
+        setLoading(true);
+        axios
+          .get(url, {
+            params: {
+              q: query,
+              apiKey: key,
+              page: pageNumber,
+            },
+            signal: controller.signal,
+          })
+          .then((res) => {
+            console.log(res);
+            setNews((prevNews) => {
+              // using set for ensuring there are no duplicate
+              return [...new Set([].concat(prevNews, res.data.articles))];
+            });
+            setLoading(false);
+          })
+          .catch((err) => {
+            setError(err);
+          });
+      }
+    }, 400);
 
-    axios
-      .get(url, {
-        params: {
-          q: query,
-          apiKey: key,
-          page: pageNumber,
-        },
-        signal: controller.signal,
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
     // clean-up code when unmount
     return () => {
       // cancel previous request
       controller.abort();
+      clearTimeout(delay);
     };
   }, [query, pageNumber]);
 
-  return null;
+  return { loading, error, news };
 }

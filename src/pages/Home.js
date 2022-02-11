@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import useNewSearch from "../services/useNewSearch";
 
 export default function Home() {
-  const [query, setQuery] = useState("Toto");
+  const [query, setQuery] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
 
-  useNewSearch(query, pageNumber);
+  const { news, loading, error } = useNewSearch(query, pageNumber);
 
   /**
    * @description Change the querry according to the new one entered by the user
@@ -21,6 +21,11 @@ export default function Home() {
     <div className="m-8">
       <h1 className="text-4xl mb-4">Ma liste de news</h1>
       <input type="text" onChange={handleSearch} className="border-2"></input>
+      {news.map((article, index) => {
+        return <h4 key={index}>{article.title}</h4>;
+      })}
+      <div>{loading && "Loading..."}</div>
+      <div>{error && "Erreur..."}</div>
     </div>
   );
 }
