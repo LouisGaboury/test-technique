@@ -11,6 +11,11 @@ export default function useNewSearch(query, pageNumber) {
   // eslint-disable-next-line no-unused-vars
   const [hasMore, setHasMore] = useState(false);
 
+  // if query change : reset the previus value
+  useEffect(() => {
+    setNews([]);
+  }, [query]);
+
   useEffect(() => {
     const controller = new AbortController();
     const delay = setTimeout(() => {
@@ -51,5 +56,5 @@ export default function useNewSearch(query, pageNumber) {
     };
   }, [query, pageNumber]);
 
-  return { loading, error, news };
+  return { loading, error, news, hasMore };
 }
