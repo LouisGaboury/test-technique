@@ -5,7 +5,12 @@ import Card from "../components/Card";
 export default function Home() {
   const [query, setQuery] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
-  const { news, loading, hasMore, error } = useNewSearch(query, pageNumber);
+  const [options, setOptions] = useState({});
+  const { news, loading, hasMore, error } = useNewSearch(
+    query,
+    pageNumber,
+    options
+  );
 
   const observer = useRef();
   const lastElementRef = useCallback(
@@ -33,14 +38,87 @@ export default function Home() {
     setPageNumber(1);
   };
 
+  const addOption = (event) => {
+    let newOptions = options;
+    switch (event.target.id) {
+      case "lang":
+        newOptions.language = null;
+        if (event.target.value) newOptions.language = event.target.value;
+        break;
+      case "title":
+        newOptions.title = null;
+        if (event.target.checked) newOptions.title = true;
+        break;
+      case "content":
+        newOptions.content = null;
+        if (event.target.checked) newOptions.content = true;
+        break;
+      case "description":
+        newOptions.description = null;
+        if (event.target.checked) newOptions.description = true;
+        break;
+      case "source":
+        newOptions.source = null;
+        if (event.target.value) newOptions.source = event.target.value;
+        break;
+      default:
+    }
+    setOptions(newOptions);
+    console.log(options);
+  };
+
   return (
     <div className="m-8">
-      <h1 className="text-4xl mb-4">Ma liste de news</h1>
-      <input
-        type="text"
-        onChange={handleSearch}
-        className="border-2 mb-8"
-      ></input>
+      <div className="border-2 rounded-xl mb-8 p-4">
+        <h1 className="text-4xl">Ma liste de news</h1>
+        <input
+          type="text"
+          onChange={handleSearch}
+          className="border-2 mt-4 mb-8"
+        ></input>
+        <p>Filtres supplémentaires :</p>
+        <div>
+          <select onChange={addOption} id="lang">
+            <option value="">Langue</option>
+            <option value="en">Anglais</option>
+            <option value="es">Espagnol</option>
+            <option value="fr">Français</option>
+            <option value="it">Italien</option>
+          </select>
+          <label className="ml-4">Titre</label>
+          <input
+            className="mx-2"
+            type="checkbox"
+            id="title"
+            name="title"
+            onChange={addOption}
+          ></input>
+          <label className="ml-4">Description</label>
+          <input
+            className="mx-2"
+            type="checkbox"
+            id="description"
+            name="description"
+            onChange={addOption}
+          ></input>
+          <label className="ml-4">Contenu</label>
+          <input
+            className="mx-2"
+            type="checkbox"
+            id="content"
+            name="content"
+            onChange={addOption}
+          ></input>
+          <select className="ml-2" id="source" onChange={addOption}>
+            <option value="">Source</option>
+            <option value="gb">Angleterre</option>
+            <option value="br">Brésil</option>
+            <option value="fr">France</option>
+            <option value="ch">Suisse</option>
+            <option value="us">USA</option>
+          </select>
+        </div>
+      </div>
       <section className="flex flex-wrap justify-around max-w-full px-3">
         {news.map((article, index) => {
           // If last element in array, passing it in useCallback
