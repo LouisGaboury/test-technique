@@ -4,7 +4,7 @@ import axios from "axios";
 const key = process.env.REACT_APP_API_KEY;
 const url = "https://newsapi.org/v2/everything";
 
-export default function useNewSearch(query, pageNumber) {
+export default function useNewSearch(query, pageNumber, options) {
   const [loading, setLoading] = useState(false);
   const [news, setNews] = useState([]);
   const [error, setError] = useState(false);
@@ -14,10 +14,11 @@ export default function useNewSearch(query, pageNumber) {
   // if query change : reset the previus value
   useEffect(() => {
     setNews([]);
-  }, [query]);
+  }, [query, options]);
 
   useEffect(() => {
     const controller = new AbortController();
+    // delay for don't make useless call to API - save some key uses
     const delay = setTimeout(() => {
       if (query) {
         setError(false);
@@ -28,6 +29,12 @@ export default function useNewSearch(query, pageNumber) {
               q: query,
               apiKey: key,
               page: pageNumber,
+              language: options.language,
+              sources: options.source,
+              // used for filter unused param in searchIn
+              searchIn: [options.title, options.description, options.content]
+                .filter(Boolean)
+                .join(","),
             },
             signal: controller.signal,
           })
@@ -53,7 +60,7 @@ export default function useNewSearch(query, pageNumber) {
       controller.abort();
       clearTimeout(delay);
     };
-  }, [query, pageNumber]);
+  }, [query, options, pageNumber]);
 
   return { loading, error, news, hasMore };
 }

@@ -12,6 +12,7 @@ export default function Home() {
     options
   );
 
+  // part watching the last displayed occurence of news array
   const observer = useRef();
   const lastElementRef = useCallback(
     (node) => {
@@ -38,6 +39,10 @@ export default function Home() {
     setPageNumber(1);
   };
 
+  /**
+   * @description Aggregate all optionals params from filters
+   * @param {Objetc} event DOM event
+   */
   const addOption = (event) => {
     let newOptions = options;
     switch (event.target.id) {
@@ -47,15 +52,15 @@ export default function Home() {
         break;
       case "title":
         newOptions.title = null;
-        if (event.target.checked) newOptions.title = true;
+        if (event.target.checked) newOptions.title = event.target.id;
         break;
       case "content":
         newOptions.content = null;
-        if (event.target.checked) newOptions.content = true;
+        if (event.target.checked) newOptions.content = event.target.id;
         break;
       case "description":
         newOptions.description = null;
-        if (event.target.checked) newOptions.description = true;
+        if (event.target.checked) newOptions.description = event.target.id;
         break;
       case "source":
         newOptions.source = null;
@@ -64,7 +69,6 @@ export default function Home() {
       default:
     }
     setOptions(newOptions);
-    console.log(options);
   };
 
   return (
