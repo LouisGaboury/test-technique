@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Article() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { article } = location.state;
+  let article = useRef();
+
+  // ensure the Article page is visited with an article
+  useEffect(() => {
+    if (location.state) {
+      article.current = location.state;
+    } else {
+      navigate("/");
+    }
+  }, []);
 
   const toDate = () => {
-    const milliseconds = Date.parse(article.publishedAt);
+    const milliseconds = Date.parse(article.current?.publishedAt);
     const newDate = new Date(milliseconds);
     return newDate.toLocaleDateString();
   };
@@ -15,10 +24,10 @@ export default function Article() {
   return (
     <article className="max-w-4xl mx-auto">
       <h2 className="mx-auto text-center font-bold text-2xl">
-        {article.title}
+        {article.current?.title}
       </h2>
       <img
-        src={article.urlToImage}
+        src={article.current?.urlToImage}
         alt="Illustration de l'article"
         className="mx-auto my-8"
       />
@@ -26,7 +35,7 @@ export default function Article() {
         Ici, le contenu complet de la news. Il est malheureusement en accès
         payant, alors...
         <br />
-        {article.content} <br />
+        {article.current?.content} <br />
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
         suscipit erat id lorem consectetur feugiat. Proin ultrices risus eu
         ligula sollicitudin cursus. Quisque id lacus porta, aliquet neque nec,
@@ -42,9 +51,9 @@ export default function Article() {
 
       {
         // display author only if available
-        article.author ? (
+        article.current?.author ? (
           <p className="mt-2 self-end text-sm italic mb-0.5">
-            {article.author}
+            {article.current?.author}
           </p>
         ) : (
           ""
@@ -52,7 +61,7 @@ export default function Article() {
       }
 
       <p className="mt-2 self-end text-sm italic">
-        published {toDate()} on {article.source.name}
+        published {toDate()} on {article.current?.source.name}
       </p>
 
       <div className="flex justify-around mt-4">
@@ -64,7 +73,7 @@ export default function Article() {
         </button>
         <button
           className="text-xl border-2 shadow-md rounded-xl h-12 w-60 max-w-md bg-gray-400"
-          onClick={() => window.open(article.url, "_blank")}
+          onClick={() => window.open(article.current?.url, "_blank")}
         >
           Article original
         </button>
